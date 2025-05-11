@@ -1,0 +1,19 @@
+# Core dependencies
+numpy>=1.20.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+matplotlib>=3.4.0
+seaborn>=0.11.0
+
+# Chemistry libraries
+rdkit>=2022.03.1
+mordred>=1.2.0
+chembl-webresource-client>=0.10.0
+
+# Machine learning extras
+umap-learn>=0.5.2
+xgboost>=1.4.0
+lightgbm>=3.3.0
+
+# Deployment
+streamlit>=1.10.0
