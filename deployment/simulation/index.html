@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRD4 Inhibitor Prediction</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Arial', sans-serif;
+        }
+        .header-container {
+            background: linear-gradient(to right, #4338ca, #6366f1);
+            color: white;
+            padding: 2rem 0;
+            border-radius: 0 0 10px 10px;
+            margin-bottom: 2rem;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        .card-header {
+            background: linear-gradient(to right, #0ea5e9, #22d3ee);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: bold;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #4f46e5, #6366f1);
+            border: none;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #4338ca, #4f46e5);
+        }
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+        .active-badge {
+            background-color: #10b981;
+        }
+        .inactive-badge {
+            background-color: #ef4444;
+        }
+        .molecule-display {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .prediction-result {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        #ic50-chart {
+            width: 100%;
+            height: 350px;
+            margin-top: 1.5rem;
+        }
+        .footer {
+            background-color: #1e293b;
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+            font-size: 2rem;
+            color: #6366f1;
+        }
+        #molecule-editor {
+            width: 100%;
+            height: 450px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <div class="container">
+            <h1><i class="fas fa-dna me-2"></i>BRD4 Inhibitor Prediction</h1>
+            <p class="lead">Predict IC50 values of potential BRD4 inhibitors using AI/ML models</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <!-- Input Panel -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-flask me-2"></i>Compound Input
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="inputTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="smiles-tab" data-bs-toggle="tab" data-bs-target="#smiles" type="button" role="tab" aria-controls="smiles" aria-selected="true">SMILES</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="editor-tab" data-bs-toggle="tab" data-bs-target="#editor" type="button" role="tab" aria-controls="editor" aria-selected="false">Structure Editor</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="file-tab" data-bs-toggle="tab" data-bs-target="#file" type="button" role="tab" aria-controls="file" aria-selected="false">File Upload</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content p-3" id="inputTabsContent">
+                            <!-- SMILES Input -->
+                            <div class="tab-pane fade show active" id="smiles" role="tabpanel" aria-labelledby="smiles-tab">
+                                <div class="mb-3">
+                                    <label for="smilesInput" class="form-label">Enter SMILES string</label>
+                                    <textarea class="form-control" id="smilesInput" rows="4" placeholder="e.g., CC(=O)Nc1ccc(O)cc1"></textarea>
+                                    <div class="form-text">Enter one SMILES string per line for multiple compounds</div>
+                                </div>
+                                <div class="text-center">
+                                    <button id="smilesSubmit" class="btn btn-primary">
+                                        <i class="fas fa-play me-1"></i>Run Prediction
+                                    </button>
+                                </div>
+                                <!-- Example SMILES -->
+                                <div class="mt-3">
+                                    <p><strong>Example SMILES:</strong></p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary example-smiles" data-smiles="CC(=O)Nc1ccc(O)cc1">Acetaminophen</button>
+                                        <button class="btn btn-sm btn-outline-secondary example-smiles" data-smiles="C1=CC=C(C=C1)C(=O)OC2=CC=CC=C2C(=O)O">Aspirin</button>
+                                        <button class="btn btn-sm btn-outline-secondary example-smiles" data-smiles="CC(C)CC1=CC=C(C=C1)C(C)C(=O)O">Ibuprofen</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Structure Editor -->
+                            <div class="tab-pane fade" id="editor" role="tabpanel" aria-labelledby="editor-tab">
+                                <div class="mb-3">
+                                    <div id="molecule-editor"></div>
+                                    <div class="form-text">Draw the chemical structure of your compound</div>
+                                </div>
+                                <div class="text-center">
+                                    <button id="editorSubmit" class="btn btn-primary">
+                                        <i class="fas fa-play me-1"></i>Run Prediction
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- File Upload -->
+                            <div class="tab-pane fade" id="file" role="tabpanel" aria-labelledby="file-tab">
+                                <div class="mb-3">
+                                    <label for="fileInput" class="form-label">Upload SDF file</label>
+                                    <input class="form-control" type="file" id="fileInput" accept=".sdf">
+                                    <div class="form-text">Upload an SDF file containing one or more compounds</div>
+                                </div>
+                                <div class="text-center">
+                                    <button id="fileSubmit" class="btn btn-primary">
+                                        <i class="fas fa-play me-1"></i>Run Prediction
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Settings Panel -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-cog me-2"></i>Prediction Settings
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="thresholdRange" class="form-label">Activity Threshold: <span id="thresholdValue">1000</span> nM</label>
+                            <input type="range" class="form-range" min="1" max="10000" step="100" value="1000" id="thresholdRange">
+                            <div class="form-text">Compounds with predicted IC50 values below this threshold will be classified as active</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="advancedModelSwitch">
+                                <label class="form-check-label" for="advancedModelSwitch">Use advanced model (higher accuracy)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Panel -->
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-2"></i>Prediction Results
+                    </div>
+                    <div class="card-body">
+                        <!-- Loading Animation -->
+                        <div id="loadingSection" class="loading">
+                            <i class="fas fa-spinner spinner"></i>
+                            <p>Running prediction...</p>
+                        </div>
+                        
+                        <!-- Results Container -->
+                        <div id="resultsContainer">
+                            <div class="alert alert-info" id="noResultsMessage">
+                                <i class="fas fa-info-circle me-2"></i>Submit a compound to see prediction results
+                            </div>
+                            
+                            <!-- This section will be populated with JavaScript -->
+                            <div id="predictionResults" style="display: none;">
+                                <!-- Individual Result -->
+                                <div class="card result-card mb-3">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <div class="molecule-display">
+                                                    <!-- Molecule image will be shown here -->
+                                                    <img src="https://via.placeholder.com/200x200?text=Molecule" alt="Molecule Structure">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-7">
+                                                <h5>Compound ID-1</h5>
+                                                <p class="text-muted small">SMILES: CC(=O)Nc1ccc(O)cc1</p>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="me-2">Activity Status:</span>
+                                                    <span class="badge active-badge">Active</span>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-2">Predicted IC50:</span>
+                                                    <span class="fw-bold">458.2 nM</span>
+                                                </div>
+                                                <div class="progress mt-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-success" role="progressbar" style="width: 55%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Chart Section -->
+                            <div id="chartSection" style="display: none;">
+                                <hr>
+                                <h5>IC50 Comparison</h5>
+                                <div id="ic50-chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Properties Panel -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-table me-2"></i>Molecular Properties
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info" id="noPropertiesMessage">
+                            <i class="fas fa-info-circle me-2"></i>Select a compound to view its properties
+                        </div>
+                        <div id="propertiesTable" style="display: none;">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Property</th>
+                                            <th>Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Molecular Weight</td>
+                                            <td>151.16 g/mol</td>
+                                        </tr>
+                                        <tr>
+                                            <td>LogP</td>
+                                            <td>0.46</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hydrogen Bond Donors</td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Hydrogen Bond Acceptors</td>
+                                            <td>2</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rotatable Bonds</td>
+                                            <td>1</td>
+                                        </tr>
+                                        <tr>
+                                            <td>TPSA</td>
+                                            <td>49.33 Å²</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>AI-BRD4-DrugDiscovery</h5>
+                    <p>A framework for developing novel BRD4 inhibitors using artificial intelligence and machine learning approaches.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Patent Pending</p>
+                    <p class="small">© 2025 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/ketcher-standalone@2.5.1/dist/ketcher.js"></script>
+    
+    <!-- Demo JavaScript (Simplified) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            const thresholdRange = document.getElementById('thresholdRange');
+            const thresholdValue = document.getElementById('thresholdValue');
+            const smilesInput = document.getElementById('smilesInput');
+            const smilesSubmit = document.getElementById('smilesSubmit');
+            const exampleSmilesButtons = document.querySelectorAll('.example-smiles');
+            const loadingSection = document.getElementById('loadingSection');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const predictionResults = document.getElementById('predictionResults');
+            const chartSection = document.getElementById('chartSection');
+            
+            // Update threshold value display
+            thresholdRange.addEventListener('input', function() {
+                thresholdValue.textContent = this.value;
+            });
+            
+            // Handle example SMILES buttons
+            exampleSmilesButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    smilesInput.value = this.getAttribute('data-smiles');
+                });
+            });
+            
+            // Handle prediction submission
+            smilesSubmit.addEventListener('click', function() {
+                if (!smilesInput.value.trim()) {
+                    alert('Please enter a SMILES string');
+                    return;
+                }
+                
+                // Show loading
+                loadingSection.style.display = 'block';
+                noResultsMessage.style.display = 'none';
+                predictionResults.style.display = 'none';
+                chartSection.style.display = 'none';
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    // Hide loading
+                    loadingSection.style.display = 'none';
+                    
+                    // Show results
+                    predictionResults.style.display = 'block';
+                    chartSection.style.display = 'block';
+                    
+                    // Initialize chart
+                    const ctx = document.createElement('canvas');
+                    document.getElementById('ic50-chart').innerHTML = '';
+                    document.getElementById('ic50-chart').appendChild(ctx);
+                    
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Compound 1', 'Reference 1', 'Reference 2'],
+                            datasets: [{
+                                label: 'Predicted IC50 (nM)',
+                                data: [458.2, 782.1, 1245.6],
+                                backgroundColor: [
+                                    'rgba(16, 185, 129, 0.7)',
+                                    'rgba(59, 130, 246, 0.7)',
+                                    'rgba(239, 68, 68, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgb(16, 185, 129)',
+                                    'rgb(59, 130, 246)',
+                                    'rgb(239, 68, 68)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'IC50 (nM)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                    // Show properties
+                    document.getElementById('noPropertiesMessage').style.display = 'none';
+                    document.getElementById('propertiesTable').style.display = 'block';
+                    
+                }, 1500);
+            });
+            
+            // Initialize molecule editor (if available)
+            try {
+                ketcher.editor.init(document.getElementById('molecule-editor'));
+            } catch (e) {
+                console.warn('Ketcher editor not available:', e);
+                document.getElementById('editor-tab').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
