@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#4338ca;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#0d9488;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#14b8a6;stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+            <feOffset dx="2" dy="2" result="offsetblur" />
+            <feComponentTransfer>
+                <feFuncA type="linear" slope="0.3" />
+            </feComponentTransfer>
+            <feMerge>
+                <feMergeNode />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+        
+        <!-- Molecule Structure Definitions -->
+        <g id="molecule1">
+            <circle cx="0" cy="0" r="6" fill="#ef4444" />
+            <circle cx="12" cy="-8" r="4" fill="#3b82f6" />
+            <circle cx="-12" cy="-8" r="4" fill="#eab308" />
+            <circle cx="0" cy="12" r="4" fill="#22c55e" />
+            <line x1="0" y1="0" x2="12" y2="-8" stroke="#333" stroke-width="1.5" />
+            <line x1="0" y1="0" x2="-12" y2="-8" stroke="#333" stroke-width="1.5" />
+            <line x1="0" y1="0" x2="0" y2="12" stroke="#333" stroke-width="1.5" />
+        </g>
+        
+        <g id="molecule2">
+            <circle cx="0" cy="0" r="6" fill="#ec4899" />
+            <circle cx="10" cy="-5" r="4" fill="#a855f7" />
+            <circle cx="-10" cy="-5" r="4" fill="#14b8a6" />
+            <circle cx="0" cy="10" r="4" fill="#f97316" />
+            <circle cx="8" cy="8" r="4" fill="#6366f1" />
+            <line x1="0" y1="0" x2="10" y2="-5" stroke="#333" stroke-width="1.5" />
+            <line x1="0" y1="0" x2="-10" y2="-5" stroke="#333" stroke-width="1.5" />
+            <line x1="0" y1="0" x2="0" y2="10" stroke="#333" stroke-width="1.5" />
+            <line x1="0" y1="0" x2="8" y2="8" stroke="#333" stroke-width="1.5" />
+        </g>
+    </defs>
+
+    <!-- Background -->
+    <rect width="800" height="500" fill="#f8fafc" />
+    
+    <!-- Title -->
+    <text x="400" y="40" font-family="Arial" font-size="24" text-anchor="middle" fill="#1e293b" font-weight="bold">AI-driven BRD4 Inhibitor Discovery Results</text>
+    <text x="400" y="70" font-family="Arial" font-size="16" text-anchor="middle" fill="#475569">Comparison of Predicted vs. Measured IC50 Values</text>
+    
+    <!-- Scatter Plot Panel -->
+    <g transform="translate(50, 120)">
+        <rect width="350" height="320" rx="10" fill="white" stroke="#cbd5e1" stroke-width="2" />
+        <text x="175" y="30" font-family="Arial" font-size="16" text-anchor="middle" fill="#1e293b" font-weight="bold">Model Performance</text>
+        
+        <!-- Axes -->
+        <line x1="50" y1="270" x2="320" y2="270" stroke="#64748b" stroke-width="2" />
+        <line x1="50" y1="270" x2="50" y2="70" stroke="#64748b" stroke-width="2" />
+        
+        <!-- Axis Labels -->
+        <text x="175" y="300" font-family="Arial" font-size="14" text-anchor="middle" fill="#475569">Predicted IC50 (nM)</text>
+        <text x="20" y="170" font-family="Arial" font-size="14" text-anchor="middle" fill="#475569" transform="rotate(-90, 20, 170)">Measured IC50 (nM)</text>
+        
+        <!-- Grid Lines -->
+        <g stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,3">
+            <line x1="50" y1="230" x2="320" y2="230" />
+            <line x1="50" y1="190" x2="320" y2="190" />
+            <line x1="50" y1="150" x2="320" y2="150" />
+            <line x1="50" y1="110" x2="320" y2="110" />
+            <line x1="50" y1="70" x2="320" y2="70" />
+            
+            <line x1="100" y1="70" x2="100" y2="270" />
+            <line x1="150" y1="70" x2="150" y2="270" />
+            <line x1="200" y1="70" x2="200" y2="270" />
+            <line x1="250" y1="70" x2="250" y2="270" />
+            <line x1="300" y1="70" x2="300" y2="270" />
+        </g>
+        
+        <!-- Axis Ticks and Values -->
+        <g font-family="Arial" font-size="10" fill="#64748b" text-anchor="middle">
+            <text x="50" y="285">0</text>
+            <text x="100" y="285">10</text>
+            <text x="150" y="285">20</text>
+            <text x="200" y="285">30</text>
+            <text x="250" y="285">40</text>
+            <text x="300" y="285">50</text>
+            
+            <text x="40" y="270" text-anchor="end">0</text>
+            <text x="40" y="230" text-anchor="end">10</text>
+            <text x="40" y="190" text-anchor="end">20</text>
+            <text x="40" y="150" text-anchor="end">30</text>
+            <text x="40" y="110" text-anchor="end">40</text>
+            <text x="40" y="70" text-anchor="end">50</text>
+        </g>
+        
+        <!-- Ideal Line -->
+        <line x1="50" y1="270" x2="300" y2="70" stroke="#64748b" stroke-width="1" stroke-dasharray="5,3" />
+        
+        <!-- Data Points -->
+        <g>
+            <circle cx="68" cy="250" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="85" cy="240" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="110" cy="210" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="130" cy="200" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="155" cy="180" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="180" cy="160" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="200" cy="145" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="220" cy="125" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="250" cy="110" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="270" cy="90" r="5" fill="#3b82f6" opacity="0.7" />
+            <circle cx="290" cy="85" r="5" fill="#3b82f6" opacity="0.7" />
+            
+            <!-- Animated data point -->
+            <circle cx="180" cy="140" r="6" fill="#ef4444" opacity="0.8">
+                <animate attributeName="r" values="6;8;6" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values="0.8;1;0.8" dur="3s" repeatCount="indefinite" />
+            </circle>
+        </g>
+        
+        <!-- Statistics -->
+        <g transform="translate(70, 80)">
+            <rect width="120" height="60" rx="5" fill="rgba(255,255,255,0.8)" stroke="#cbd5e1" />
+            <text x="10" y="20" font-family="Arial" font-size="11" fill="#475569">R² = 0.92</text>
+            <text x="10" y="35" font-family="Arial" font-size="11" fill="#475569">RMSE = 3.45 nM</text>
+            <text x="10" y="50" font-family="Arial" font-size="11" fill="#475569">n = 1566 compounds</text>
+        </g>
+    </g>
+    
+    <!-- Results Table Panel -->
+    <g transform="translate(450, 120)" filter="url(#shadow)">
+        <rect width="300" height="320" rx="10" fill="url(#grad1)" opacity="0.95" />
+        <text x="150" y="30" font-family="Arial" font-size="16" text-anchor="middle" fill="white" font-weight="bold">BRD4 Inhibitor Results</text>
+        
+        <!-- Table Headers -->
+        <rect x="20" y="50" width="260" height="30" fill="rgba(255,255,255,0.15)" rx="5" />
+        <text x="40" y="70" font-family="Arial" font-size="12" fill="white" font-weight="bold">Compound</text>
+        <text x="135" y="70" font-family="Arial" font-size="12" fill="white" font-weight="bold">Pred. IC50 (nM)</text>
+        <text x="230" y="70" font-family="Arial" font-size="12" fill="white" font-weight="bold">Meas. IC50 (nM)</text>
+        
+        <!-- Table Rows -->
+        <g font-family="Arial" font-size="12" fill="white">
+            <!-- Row 1 -->
+            <rect x="20" y="85" width="260" height="25" fill="rgba(255,255,255,0.05)" rx="3" />
+            <text x="40" y="102">BRD4-IN-1</text>
+            <text x="135" y="102">12.8</text>
+            <text x="230" y="102">14.2</text>
+            
+            <!-- Row 2 -->
+            <rect x="20" y="115" width="260" height="25" fill="rgba(255,255,255,0.05)" rx="3" />
+            <text x="40" y="132">JQ1</text>
+            <text x="135" y="132">24.3</text>
+            <text x="230" y="132">25.1</text>
+            
+            <!-- Row 3 - Highlighted -->
+            <rect x="20" y="145" width="260" height="25" fill="rgba(255,255,255,0.2)" rx="3" />
+            <text x="40" y="162" font-weight="bold">AI-BRD4-1</text>
+            <text x="135" y="162" font-weight="bold">5.7</text>
+            <text x="230" y="162" font-weight="bold">6.2</text>
+            
+            <!-- Row 4 -->
+            <rect x="20" y="175" width="260" height="25" fill="rgba(255,255,255,0.05)" rx="3" />
+            <text x="40" y="192">OTX-015</text>
+            <text x="135" y="192">30.5</text>
+            <text x="230" y="192">31.8</text>
+            
+            <!-- Row 5 -->
+            <rect x="20" y="205" width="260" height="25" fill="rgba(255,255,255,0.05)" rx="3" />
+            <text x="40" y="222">CPI-0610</text>
+            <text x="135" y="222">18.4</text>
+            <text x="230" y="222">16.9</text>
+            
+            <!-- Row 6 -->
+            <rect x="20" y="235" width="260" height="25" fill="rgba(255,255,255,0.05)" rx="3" />
+            <text x="40" y="252">AI-BRD4-2</text>
+            <text x="135" y="252">9.3</text>
+            <text x="230" y="252">10.1</text>
+        </g>
+        
+        <!-- Molecule Animation -->
+        <g transform="translate(150, 275)">
+            <use xlink:href="#molecule2" transform="scale(1.5)">
+                <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="20s" repeatCount="indefinite" />
+            </use>
+        </g>
+    </g>
+    
+    <!-- Key Findings Panel -->
+    <g transform="translate(200, 460)" filter="url(#shadow)">
+        <rect width="400" height="30" rx="15" fill="url(#grad2)" />
+        <text x="200" y="20" font-family="Arial" font-size="14" text-anchor="middle" fill="white" font-weight="bold">
+            AI-optimized compounds show 5-10x improved potency
+        </text>
+    </g>
+    
+    <!-- Patent info -->
+    <text x="790" y="490" font-family="Arial" font-size="10" text-anchor="end" fill="#64748b">Patent Pending</text>
+</svg>
